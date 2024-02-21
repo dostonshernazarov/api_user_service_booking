@@ -362,6 +362,18 @@ func (h *handlerV1) RefreshAccessToken(c *gin.Context) {
 		AccessToken: access,
 	})
 
-	fmt.Println(refresh)
+	h.serviceManager.UserService().UpdateUser(context.Background(), &pbu.User{
+		Id:           user.Id,
+		FirstName:    user.FirstName,
+		LastName:     user.LastName,
+		Email:        user.Email,
+		Password:     user.Password,
+		Birthday:     user.Birthday,
+		ImageUrl:     user.ImageUrl,
+		CardNum:      user.CardNum,
+		Phone:        user.Phone,
+		Role:         user.Role,
+		RefreshToken: refresh,
+	})
 
 }
