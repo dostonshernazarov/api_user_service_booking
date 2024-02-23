@@ -1,0 +1,12 @@
+p, unauthorized, /v1/swagger/*, GET
+p, unauthorized, /v1/users/signup, POST
+p, unauthorized, /v1/users/verify, GET
+p, user, /v1/users/login, GET
+p, user, /v1/users/retoken, GET
+p, admin, /v1/users/{id}, GET
+p, admin, /v1/users, GET
+p, user, /v1/users/{id}, PUT
+p, user, /v1/users/{id}, DELETE
+p, unauthorized, /v1/users/columns, GET
+
+

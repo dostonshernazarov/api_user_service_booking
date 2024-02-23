@@ -1,49 +1,16 @@
 definitions:
-  models.Comment:
-    properties:
-      content:
-        type: string
-      createdat:
-        type: string
-      deletedat:
-        type: string
-      id:
-        type: string
-      owner_id:
-        type: string
-      post_id:
-        type: string
-      updatedat:
-        type: string
-    type: object
-  models.CommentLikeOwners:
-    properties:
-      comment_id:
-        type: string
-      user_id:
-        type: string
-    type: object
   models.Error:
     properties:
       message:
         type: string
     type: object
-  models.Post:
+  models.RegisterResponseModel:
     properties:
-      id:
+      accessToken:
         type: string
-      image_url:
+      refreshToken:
         type: string
-      owner_id:
-        type: string
-      title:
-        type: string
-    type: object
-  models.PostLikeOwners:
-    properties:
-      post_id:
-        type: string
-      user_id:
+      userID:
         type: string
     type: object
   models.ResponseUser:
@@ -66,16 +33,17 @@ definitions:
       error:
         $ref: '#/definitions/models.Error'
     type: object
-  models.Status:
-    properties:
-      liked:
-        type: boolean
-    type: object
   models.User:
     properties:
+      birthday:
+        type: string
+      card_num:
+        type: string
       email:
         type: string
       id:
+        type: string
+      image_url:
         type: string
       last_name:
         type: string
@@ -83,11 +51,15 @@ definitions:
         type: string
       password:
         type: string
-      username:
+      phone:
+        type: string
+      role:
         type: string
     type: object
-  models.UserDetail:
+  models.UserRegister:
     properties:
+      code:
+        type: string
       email:
         type: string
       first_name:
@@ -96,446 +68,10 @@ definitions:
         type: string
       password:
         type: string
-      username:
-        type: string
     type: object
-host: localhost:8080
 info:
   contact: {}
-  description: This is a example of Social Network
-  title: Welcome to NajotGram
-  version: "1.0"
 paths:
-  /v1/comments/:
-    get:
-      consumes:
-      - application/json
-      description: Api returns list of comments
-      parameters:
-      - description: Page
-        in: path
-        name: page
-        required: true
-        type: integer
-      - description: Limit
-        in: path
-        name: limit
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: ListComments
-      tags:
-      - comment
-    post:
-      consumes:
-      - application/json
-      description: Api for creating a new comment
-      parameters:
-      - description: createCommentModel
-        in: body
-        name: User
-        required: true
-        schema:
-          $ref: '#/definitions/models.Comment'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Comment'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: CreateComment
-      tags:
-      - comment
-  /v1/comments/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Api deletes comment
-      produces:
-      - application/json
-      responses:
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: DeleteComment
-      tags:
-      - comment
-    get:
-      consumes:
-      - application/json
-      description: Api for getting comment by id
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Comment'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: GetPost
-      tags:
-      - comment
-    put:
-      consumes:
-      - application/json
-      description: Api returns updates comment
-      produces:
-      - application/json
-      responses:
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: UpdateComment
-      tags:
-      - comment
-  /v1/likes/comment:
-    post:
-      consumes:
-      - application/json
-      description: Api for like to comment
-      parameters:
-      - description: createLikeModel
-        in: body
-        name: User
-        required: true
-        schema:
-          $ref: '#/definitions/models.CommentLikeOwners'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Status'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: LikeComment
-      tags:
-      - like
-  /v1/likes/comment{id}:
-    get:
-      consumes:
-      - application/json
-      description: Api for getting owners by comment_id
-      parameters:
-      - description: Comment Id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Comment'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: GetCommentLikeOwners
-      tags:
-      - like
-  /v1/likes/post:
-    post:
-      consumes:
-      - application/json
-      description: Api for like to post
-      parameters:
-      - description: createLikeModel
-        in: body
-        name: User
-        required: true
-        schema:
-          $ref: '#/definitions/models.PostLikeOwners'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Status'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: LikePost
-      tags:
-      - like
-  /v1/likes/post{id}:
-    get:
-      consumes:
-      - application/json
-      description: Api for getting owners by post_id
-      parameters:
-      - description: Post Id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Post'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: GetPostLikeOwners
-      tags:
-      - like
-  /v1/login:
-    get:
-      consumes:
-      - application/json
-      description: LogIn - Api for login users
-      parameters:
-      - description: Email
-        in: query
-        name: email
-        required: true
-        type: string
-      - description: Password
-        in: query
-        name: password
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.User'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: LogIn User
-      tags:
-      - registr
-  /v1/posts/:
-    get:
-      consumes:
-      - application/json
-      description: Api returns list of posts
-      parameters:
-      - description: Page
-        in: path
-        name: page
-        required: true
-        type: integer
-      - description: Limit
-        in: path
-        name: limit
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: ListPost
-      tags:
-      - post
-    post:
-      consumes:
-      - application/json
-      description: Api for creating a new post
-      parameters:
-      - description: createPostModel
-        in: body
-        name: User
-        required: true
-        schema:
-          $ref: '#/definitions/models.Post'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Post'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: CreatePost
-      tags:
-      - post
-  /v1/posts/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Api deletes post
-      produces:
-      - application/json
-      responses:
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: DeletePost
-      tags:
-      - post
-    get:
-      consumes:
-      - application/json
-      description: Api for getting post by id
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Post'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: GetPost
-      tags:
-      - post
-    put:
-      consumes:
-      - application/json
-      description: Api returns updates post
-      produces:
-      - application/json
-      responses:
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: UpdatePost
-      tags:
-      - post
-  /v1/register/:
-    post:
-      consumes:
-      - application/json
-      description: Registr - Api for registring users
-      parameters:
-      - description: UserDetail
-        in: body
-        name: registr
-        required: true
-        schema:
-          $ref: '#/definitions/models.UserDetail'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ResponseUser'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.StandardErrorModel'
-      summary: Registr
-      tags:
-      - registr
   /v1/users/:
     get:
       consumes:
@@ -660,7 +196,140 @@ paths:
       summary: UpdateUser
       tags:
       - user
-  /v1/verification:
+  /v1/users/columns:
+    get:
+      consumes:
+      - application/json
+      description: Api returns list of users
+      parameters:
+      - description: Page
+        in: path
+        name: page
+        required: true
+        type: integer
+      - description: Limit
+        in: path
+        name: limit
+        required: true
+        type: integer
+      - description: Column
+        in: path
+        name: column
+        required: true
+        type: string
+      - description: Item
+        in: path
+        name: item
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      summary: GetWithColumnItem
+      tags:
+      - user
+  /v1/users/login:
+    get:
+      consumes:
+      - application/json
+      description: LogIn - Api for login users
+      parameters:
+      - description: Email
+        in: query
+        name: email
+        required: true
+        type: string
+      - description: Password
+        in: query
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      summary: LogIn User
+      tags:
+      - registr
+  /v1/users/retoken:
+    get:
+      consumes:
+      - application/json
+      description: Refresh token - Api for verification users
+      parameters:
+      - description: refreshToken
+        in: query
+        name: refresh_token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.RegisterResponseModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      summary: RefreshAccessToken User
+      tags:
+      - token
+  /v1/users/signup:
+    post:
+      consumes:
+      - application/json
+      description: Registr - Api for registring users
+      parameters:
+      - description: UserDetail
+        in: body
+        name: registr
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRegister'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseUser'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.StandardErrorModel'
+      summary: Registr
+      tags:
+      - registr
+  /v1/users/verify:
     get:
       consumes:
       - application/json
@@ -682,7 +351,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/models.RegisterResponseModel'
         "400":
           description: Bad Request
           schema:

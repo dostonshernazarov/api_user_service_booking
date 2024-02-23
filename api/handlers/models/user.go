@@ -17,6 +17,10 @@ type Users struct {
 	Users []*User `json:"users"`
 }
 
+type Delete struct {
+	Result string
+}
+
 type RegisterResponseModel struct {
 	UserID       string
 	AccessToken  string

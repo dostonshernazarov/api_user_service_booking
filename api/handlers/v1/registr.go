@@ -1,8 +1,8 @@
 package v1
 
 import (
-	"api_user_service_booking/api/auth"
 	"api_user_service_booking/api/handlers/models"
+	"api_user_service_booking/api/tokens"
 	pbu "api_user_service_booking/genproto/user_proto"
 	l "api_user_service_booking/pkg/logger"
 	"context"
@@ -27,11 +27,11 @@ import (
 // @Tags registr
 // @Accept json
 // @Produce json
-// @Param registr body models.UserDetail true "UserDetail"
+// @Param registr body models.UserRegister true "UserDetail"
 // @Success 200 {object} models.ResponseUser
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/register/ [post]
+// @Router /v1/users/signup [post]
 func (h *handlerV1) Registr(c *gin.Context) {
 	var (
 		body        models.UserRegister
@@ -75,26 +75,6 @@ func (h *handlerV1) Registr(c *gin.Context) {
 		return
 	}
 
-	//err = body.Validate()
-	//if err != nil {
-	//	c.JSON(http.StatusBadRequest, "Error validation")
-	//	h.log.Error("Incorrect user email or password validation", l.Error(err))
-	//	return
-	//}
-	//
-	//response, err := h.serviceManager.UserService().CheckField(
-	//	ctx, &pbu.CheckUser{
-	//		Field: "email",
-	//		Value: body.Email,
-	//	})
-	//if err != nil || response.Exists {
-	//	c.JSON(http.StatusInternalServerError, gin.H{
-	//		"error": err.Error(),
-	//	})
-	//	h.log.Error("failed to checkfield", l.Error(err))
-	//	return
-	//}
-
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
@@ -135,7 +115,6 @@ func (h *handlerV1) Registr(c *gin.Context) {
 		return
 	}
 
-	//models.SendCode(body.Email, models.GenerateCode(rdb, body))
 	responsemessage := models.ResponseMessage{
 		Content: "We send verification password you email",
 	}
@@ -154,7 +133,7 @@ func (h *handlerV1) Registr(c *gin.Context) {
 // @Success 200 {object} models.User
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/login [get]
+// @Router /v1/users/login [get]
 func (h *handlerV1) LogIn(c *gin.Context) {
 	var jspbMarshal protojson.MarshalOptions
 	jspbMarshal.UseProtoNames = true
@@ -183,7 +162,7 @@ func (h *handlerV1) LogIn(c *gin.Context) {
 		h.log.Error("failed to check password", l.Error(err))
 		return
 	}
-	h.jwtHandler = auth.JwtHandler{
+	h.jwtHandler = tokens.JwtHandler{
 		Sub:       responseUser.Id,
 		Role:      responseUser.Role,
 		SigninKey: h.cfg.SignInKey,
@@ -217,10 +196,10 @@ func (h *handlerV1) LogIn(c *gin.Context) {
 // @Produce json
 // @Param email query string true "Email"
 // @Param code query string true "Code"
-// @Success 200 {object} models.User
+// @Success 200 {object} models.RegisterResponseModel
 // @Failure 400 {object} models.StandardErrorModel
 // @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/verification [get]
+// @Router /v1/users/verify [get]
 func (h *handlerV1) Verification(c *gin.Context) {
 	var jspbMarshal protojson.MarshalOptions
 	jspbMarshal.UseProtoNames = true
@@ -262,20 +241,6 @@ func (h *handlerV1) Verification(c *gin.Context) {
 		return
 	}
 
-	//createdUser, err := h.serviceManager.UserService().Create(ctx, &pbu.User{
-	//	Name:     userdetail.FirstName,
-	//	LastName: userdetail.LastName,
-	//	Username: userdetail.UserName,
-	//	Email:    userdetail.Email,
-	//	Password: userdetail.Password,
-	//})
-	//if err != nil {
-	//	c.JSON(http.StatusBadRequest, gin.H{
-	//		"error": "Error creating user",
-	//	})
-	//	h.log.Error("failed to create user", l.Error(err))
-	//	return
-	//}
 	id, err := uuid.NewUUID()
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{
@@ -285,7 +250,7 @@ func (h *handlerV1) Verification(c *gin.Context) {
 		return
 	}
 
-	h.jwtHandler = auth.JwtHandler{
+	h.jwtHandler = tokens.JwtHandler{
 		Sub:  id.String(),
 		Iss:  "client",
 		Role: "user",
@@ -303,13 +268,14 @@ func (h *handlerV1) Verification(c *gin.Context) {
 
 	user_id := uuid.New()
 
-	res, err := h.serviceManager.UserService().PartCreate(ctx, &pbu.PartUser{
-		Id:         user_id.String(),
-		FirstName:  userdetail.FirstName,
-		LastName:   userdetail.LastName,
-		Email:      userdetail.Email,
-		Password:   userdetail.Password,
-		RefreshTkn: refresh,
+	res, err := h.serviceManager.UserService().Create(ctx, &pbu.User{
+		Id:           user_id.String(),
+		FirstName:    userdetail.FirstName,
+		LastName:     userdetail.LastName,
+		Email:        userdetail.Email,
+		Password:     userdetail.Password,
+		Role:         "user",
+		RefreshToken: refresh,
 	})
 
 	c.JSON(http.StatusOK, &models.RegisterResponseModel{
@@ -321,6 +287,17 @@ func (h *handlerV1) Verification(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+// RefreshAccessToken
+// @Summary RefreshAccessToken User
+// @Description Refresh token - Api for verification users
+// @Tags token
+// @Accept json
+// @Produce json
+// @Param refresh_token query string true "refreshToken"
+// @Success 200 {object} models.RegisterResponseModel
+// @Failure 400 {object} models.StandardErrorModel
+// @Failure 500 {object} models.StandardErrorModel
+// @Router /v1/users/retoken [get]
 func (h *handlerV1) RefreshAccessToken(c *gin.Context) {
 	var jspbMarshal protojson.MarshalOptions
 	jspbMarshal.UseProtoNames = true
@@ -340,7 +317,7 @@ func (h *handlerV1) RefreshAccessToken(c *gin.Context) {
 		return
 	}
 
-	h.jwtHandler = auth.JwtHandler{
+	h.jwtHandler = tokens.JwtHandler{
 		Sub:     user.Id,
 		Iss:     "client",
 		Role:    user.Role,

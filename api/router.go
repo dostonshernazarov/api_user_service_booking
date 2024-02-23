@@ -3,10 +3,11 @@ package api
 import (
 	_ "api_user_service_booking/api/docs" // swag
 	v1 "api_user_service_booking/api/handlers/v1"
-	"api_user_service_booking/api/middleware"
+	casbinC "api_user_service_booking/api/middleware"
 	"api_user_service_booking/config"
 	"api_user_service_booking/pkg/logger"
 	"api_user_service_booking/services"
+	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 
 	swaggerFiles "github.com/swaggo/files"
@@ -17,6 +18,7 @@ import (
 type Option struct {
 	Conf           config.Config
 	Logger         logger.Logger
+	Enforcer       *casbin.Enforcer
 	ServiceManager services.IServiceManager
 }
 
@@ -31,24 +33,24 @@ func New(option Option) *gin.Engine {
 		Logger:         option.Logger,
 		ServiceManager: option.ServiceManager,
 		Cfg:            option.Conf,
+		Enforcer:       option.Enforcer,
 	})
 
-	admin := router.Group("/admin", middleware.MiddleCheckAdmin)
-	admin.GET("/check", handlerV1.Admin)
-
-	api := router.Group("/v1", middleware.Auth)
-	// users
+	api := router.Group("/v1")
+	api.Use(casbinC.CheckCasbinPermission(option.Enforcer, option.Conf))
+	// register
 	api.POST("/users/signup", handlerV1.Registr)
 	api.GET("/users/verify", handlerV1.Verification)
 	api.GET("/users/login", handlerV1.LogIn)
 
 	api.GET("/users/retoken", handlerV1.RefreshAccessToken)
-	api.GET("/ping", handlerV1.Ping)
 
-	//api.GET("/users/:id", handlerV1.GetUser)
-	//api.GET("/users", handlerV1.ListUsers)
-	//api.PUT("/users/:id", handlerV1.UpdateUser)
-	//api.DELETE("/users/:id", handlerV1.DeleteUser)
+	//user
+	api.GET("/users/:id", handlerV1.GetUser)
+	api.GET("/users", handlerV1.ListUsers)
+	api.PUT("/users/:id", handlerV1.UpdateUser)
+	api.DELETE("/users/:id", handlerV1.DeleteUser)
+	api.GET("/users/columns", handlerV1.GetWithColumnItem)
 
 	// posts
 
