@@ -13,6 +13,9 @@ type Config struct {
 	UserServiceHost string
 	UserServicePort int
 
+	AuthConfigPath string
+	CSVFilePath    string
+
 	//PostServiceHost string
 	//PostServicePort int
 
@@ -52,6 +55,10 @@ func Load() Config {
 	//
 	//c.LikeServiceHost = cast.ToString(getOrReturnDefault("LIKE_SERVICE_HOST", "127.0.0.1"))
 	//c.LikeServicePort = cast.ToInt(getOrReturnDefault("LIKE_SERVICE_PORT", 4444))
+
+	// casbin...
+	c.AuthConfigPath = cast.ToString(getOrReturnDefault("AUTH_PATH", "./config/auth.conf"))
+	c.CSVFilePath = cast.ToString(getOrReturnDefault("CSV_FILE_PATH", "./config/auth.csv"))
 
 	c.CtxTimeout = cast.ToInt(getOrReturnDefault("CTX_TIMEOUT", 7))
 	c.AccessTokenTimout = cast.ToInt(getOrReturnDefault("ACCESS_TOKEN_TIMEOUT", 300))

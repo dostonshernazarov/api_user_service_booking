@@ -6,6 +6,7 @@ import (
 	casbinC "api_user_service_booking/api/middleware"
 	"api_user_service_booking/config"
 	"api_user_service_booking/pkg/logger"
+	"api_user_service_booking/queue/kafka/producer"
 	"api_user_service_booking/services"
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,7 @@ type Option struct {
 	Logger         logger.Logger
 	Enforcer       *casbin.Enforcer
 	ServiceManager services.IServiceManager
+	Writer         *producer.KafkaProducer
 }
 
 // New ...
@@ -52,7 +54,10 @@ func New(option Option) *gin.Engine {
 	api.DELETE("/users/:id", handlerV1.DeleteUser)
 	api.GET("/users/columns", handlerV1.GetWithColumnItem)
 
-	// posts
+	// rbac
+	api.GET("/rbac/policy", handlerV1.ListAllPolicies)
+	api.GET("/rbac/roles", handlerV1.ListAllRoles)
+	api.POST("/rbac/create", handlerV1.CreateNewRole)
 
 	url := ginSwagger.URL("swagger/doc.json")
 	api.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
