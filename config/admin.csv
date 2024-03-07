@@ -1,0 +1,46 @@
+p, admin, /v1/users/retoken, GET
+p, admin, /v1/users, POST
+p, admin, /v1/users/{id}, GET
+p, admin, /v1/users/{id}, PUT
+p, admin, /v1/users, GET
+p, admin, /v1/user, DELETE
+p, admin, /v1/users/columns, GET
+
+p, admin, /v1/owner, POST
+p, admin, /v1/owner, GET
+p, admin, /v1/owner/{id}, GET
+p, admin, /v1/owner/{id}, PUT
+p, admin, /v1/owner, DELETE
+p, admin, /v1/owner/columns, GET
+
+p, admin, /v1/hotel, POST
+p, admin, /v1/hotel, GET
+p, admin, /v1/hotel/{id}, GET
+p, admin, /v1/hotel/{id}, PUT
+p, admin, /v1/hotel, DELETE
+p, admin, /v1/hotel/columns, GET
+
+p, admin, /v1/taxi, POST
+p, admin, /v1/taxi, GET
+p, admin, /v1/taxi/{id}, GET
+p, admin, /v1/taxi/{id}, PUT
+p, admin, /v1/taxi, DELETE
+p, admin, /v1/taxi/columns, GET
+
+p, admin, /v1/attraction, POST
+p, admin, /v1/attraction, GET
+p, admin, /v1/attraction/{id}, GET
+p, admin, /v1/attraction/{id}, PUT
+p, admin, /v1/attraction, DELETE
+p, admin, /v1/attraction/columns, GET
+
+p, sudo, /v1/rbac/policy, GET
+p, sudo, /v1/rbac/roles, GET
+p, sudo, /v1/rbac/create, POST
+p, sudo, /v1/admin, POST
+p, sudo, /v1/admin, GET
+p, sudo, /v1/admin/{id}, PUT
+p, sudo, /v1/admin/{id}, DELETE
+
+g, sudo, admin, *
+

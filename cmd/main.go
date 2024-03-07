@@ -4,7 +4,7 @@ import (
 	"api_user_service_booking/api"
 	"api_user_service_booking/config"
 	"api_user_service_booking/pkg/logger"
-	"api_user_service_booking/queue/kafka/producer"
+	rbmq "api_user_service_booking/queue/rabbitmq/producermq"
 	"api_user_service_booking/services"
 	"github.com/casbin/casbin/v2"
 	fileadapter "github.com/casbin/casbin/v2/persist/file-adapter"
@@ -20,6 +20,13 @@ func main() {
 	if err != nil {
 		log.Error("gRPC dial error", logger.Error(err))
 	}
+
+	writer, err := rbmq.NewRabbitMQProducer("amqp://guest:guest@localhost:5672/")
+	if err != nil {
+		log.Error("error rabbit mq", logger.Error(err))
+		//	return
+	}
+	defer writer.Close()
 
 	//// Connect postgres for casbin
 	//psqlCon := fmt.Sprintf(`host=%s port=%d user=%s password=%s dbname=%s sslmode=disable`, "localhost", 5432, "doston", "doston", "user_service")
@@ -61,17 +68,17 @@ func main() {
 	casbinEnforcer.GetRoleManager().(*defaultrolemanager.RoleManagerImpl).AddMatchingFunc("keyMatch", util.KeyMatch)
 	casbinEnforcer.GetRoleManager().(*defaultrolemanager.RoleManagerImpl).AddMatchingFunc("keyMatch3", util.KeyMatch3)
 
-	writer, err := producer.NewKafkaProducerInit([]string{"localhost:9092"})
-	if err != nil {
-		log.Error("NewKafkaProducerInit: %v", logger.Error(err))
-	}
-
-	err = writer.ProduceMessage("test-topic", []byte("\nthis message has come from produce"))
-	if err != nil {
-		log.Fatal("failed to run  ProduceMessage", logger.Error(err))
-	}
-
-	defer writer.Close()
+	//writer, err := producer.NewKafkaProducerInit([]string{"localhost:9092"})
+	//if err != nil {
+	//	log.Error("NewKafkaProducerInit: %v", logger.Error(err))
+	//}
+	//
+	//err = writer.ProduceMessage("test-topic", []byte("\nthis message has come from produce"))
+	//if err != nil {
+	//	log.Fatal("failed to run  ProduceMessage", logger.Error(err))
+	//}
+	//
+	//defer writer.Close()
 
 	server := api.New(api.Option{
 		Conf:           cfg,

@@ -1,0 +1,27 @@
+p, unauthorized, /v1/swagger/*, GET
+p, unauthorized, /v1/users/signup, POST
+p, unauthorized, /v1/users/verify, GET
+
+p, user, /v1/users/login, GET
+p, user, /v1/users/{id}, GET
+p, user, /v1/users/{id}, PUT
+p, user, /v1/users/{id}, DELETE
+
+p, user, /v1/hotel, GET
+p, user, /v1/taxi, GET
+p, user, /v1/attraction, GET
+
+p, owner, /v1/hotel, POST
+p, owner, /v1/hotel/{id}, GET
+p, owner, /v1/hotel, PUT
+p, owner, /v1/hotel, DELETE
+
+p, owner, /v1/taxi, POST
+p, owner, /v1/taxi/{id}, GET
+p, owner, /v1/taxi, PUT
+p, owner, /v1/taxi, DELETE
+
+p, owner, /v1/attraction, POST
+p, owner, /v1/attraction/{id}, GET
+p, owner, /v1/attraction, PUT
+p, owner, /v1/attraction, DELETE

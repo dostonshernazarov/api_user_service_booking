@@ -95,13 +95,14 @@ func (h *handlerV1) Registr(c *gin.Context) {
 		return
 	}
 
-	err = h.writer.ProduceMessage("test-topic", userByte)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "error while producing to kafka",
-		})
-		h.log.Error("Storing to the Kafka error")
-	}
+	//err = h.writer.ProduceMessage("test-topic", userByte)
+	//if err != nil {
+	//	c.JSON(http.StatusBadRequest, gin.H{
+	//		"message": "error while producing to kafka",
+	//	})
+	//	h.log.Error("Storing to the Kafka error")
+	//}
+	h.writer.ProducerMessage("test-topic", userByte)
 
 	from := "dostonshernazarov2001@gmail.com"
 	password := "yzri faon zuix pldt"

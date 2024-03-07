@@ -5,7 +5,7 @@ import (
 	"api_user_service_booking/api/tokens"
 	"api_user_service_booking/config"
 	"api_user_service_booking/pkg/logger"
-	"api_user_service_booking/queue/kafka/producer"
+	"api_user_service_booking/queue/rabbitmq/producermq"
 	"api_user_service_booking/services"
 	"github.com/casbin/casbin/v2"
 	"net/http"
@@ -19,7 +19,7 @@ type handlerV1 struct {
 	cfg            config.Config
 	jwtHandler     tokens.JwtHandler
 	enforcer       *casbin.Enforcer
-	writer         *producer.KafkaProducer
+	writer         *producermq.RabbitMQProducerImpl
 }
 
 // HandlerV1Config ...
@@ -29,7 +29,7 @@ type HandlerV1Config struct {
 	Cfg            config.Config
 	jwtHandler     tokens.JwtHandler
 	Enforcer       *casbin.Enforcer
-	Writer         *producer.KafkaProducer
+	Writer         *producermq.RabbitMQProducerImpl
 }
 
 // New ...
