@@ -50,15 +50,8 @@ func New(option Option) *gin.Engine {
 
 	//user
 	api.GET("/users/:id", handlerV1.GetUser)
-	api.GET("/users", handlerV1.ListUsers)
 	api.PUT("/users/:id", handlerV1.UpdateUser)
 	api.DELETE("/users/:id", handlerV1.DeleteUser)
-	api.GET("/users/columns", handlerV1.GetWithColumnItem)
-
-	// rbac
-	api.GET("/rbac/policy", handlerV1.ListAllPolicies)
-	api.GET("/rbac/roles", handlerV1.ListAllRoles)
-	api.POST("/rbac/create", handlerV1.CreateNewRole)
 
 	url := ginSwagger.URL("swagger/doc.json")
 	api.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

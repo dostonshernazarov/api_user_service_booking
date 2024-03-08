@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"api_user_service_booking/pkg/utils"
 	"context"
 	"github.com/google/uuid"
 	"net/http"
@@ -108,51 +107,51 @@ func (h *handlerV1) GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// ListUsers returns list of users
-// @Summary ListUser
-// @Description Api returns list of users
-// @Tags user
-// @Accept json
-// @Produce json
-// @Param page path int64 true "Page"
-// @Param limit path int64 true "Limit"
-// @Succes 200 {object} models.Users
-// @Failure 400 {object} models.StandardErrorModel
-// @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/users/ [get]
-func (h *handlerV1) ListUsers(c *gin.Context) {
-	queryParams := c.Request.URL.Query()
-
-	params, errStr := utils.ParseQueryParams(queryParams)
-	if errStr != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": errStr[0],
-		})
-		h.log.Error("failed to parse query params json" + errStr[0])
-		return
-	}
-
-	var jspbMarshal protojson.MarshalOptions
-	jspbMarshal.UseProtoNames = true
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
-	defer cancel()
-
-	response, err := h.serviceManager.UserService().GetAllUsers(
-		ctx, &pbu.GetAllUsersRequest{
-			Limit: params.Limit,
-			Page:  params.Page,
-		})
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		h.log.Error("failed to list users", l.Error(err))
-		return
-	}
-
-	c.JSON(http.StatusOK, response)
-}
+//// ListUsers returns list of users
+//// @Summary ListUser
+//// @Description Api returns list of users
+//// @Tags user
+//// @Accept json
+//// @Produce json
+//// @Param page path int64 true "Page"
+//// @Param limit path int64 true "Limit"
+//// @Succes 200 {object} models.Users
+//// @Failure 400 {object} models.StandardErrorModel
+//// @Failure 500 {object} models.StandardErrorModel
+//// @Router /v1/users/ [get]
+//func (h *handlerV1) ListUsers(c *gin.Context) {
+//	queryParams := c.Request.URL.Query()
+//
+//	params, errStr := utils.ParseQueryParams(queryParams)
+//	if errStr != nil {
+//		c.JSON(http.StatusBadRequest, gin.H{
+//			"error": errStr[0],
+//		})
+//		h.log.Error("failed to parse query params json" + errStr[0])
+//		return
+//	}
+//
+//	var jspbMarshal protojson.MarshalOptions
+//	jspbMarshal.UseProtoNames = true
+//
+//	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
+//	defer cancel()
+//
+//	response, err := h.serviceManager.UserService().GetAllUsers(
+//		ctx, &pbu.GetAllUsersRequest{
+//			Limit: params.Limit,
+//			Page:  params.Page,
+//		})
+//	if err != nil {
+//		c.JSON(http.StatusInternalServerError, gin.H{
+//			"error": err.Error(),
+//		})
+//		h.log.Error("failed to list users", l.Error(err))
+//		return
+//	}
+//
+//	c.JSON(http.StatusOK, response)
+//}
 
 // UpdateUser updates user by id
 // @Summary UpdateUser
@@ -229,55 +228,55 @@ func (h *handlerV1) DeleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// GetWithColumnItem returns list of users
-// @Summary GetWithColumnItem
-// @Description Api returns list of users
-// @Tags user
-// @Accept json
-// @Produce json
-// @Param page path int64 true "Page"
-// @Param limit path int64 true "Limit"
-// @Param column path string true "Column"
-// @Param item path string true "Item"
-// @Succes 200 {object} models.Users
-// @Failure 400 {object} models.StandardErrorModel
-// @Failure 500 {object} models.StandardErrorModel
-// @Router /v1/users/columns [get]
-func (h *handlerV1) GetWithColumnItem(c *gin.Context) {
-	queryParams := c.Request.URL.Query()
-
-	columnName := c.Query("column")
-	item := c.Query("item")
-
-	params, errStr := utils.ParseQueryParams(queryParams)
-	if errStr != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": errStr[0],
-		})
-		h.log.Error("failed to parse query params json" + errStr[0])
-		return
-	}
-
-	var jspbMarshal protojson.MarshalOptions
-	jspbMarshal.UseProtoNames = true
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
-	defer cancel()
-
-	response, err := h.serviceManager.UserService().GetWithColumnAndItem(ctx, &pbu.GetWithColumnAndItemReq{
-		Column: columnName,
-		Item:   item,
-		Page:   params.Page,
-		Limit:  params.Limit,
-	})
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		h.log.Error("failed to list users", l.Error(err))
-		return
-	}
-
-	c.JSON(http.StatusOK, response)
-}
+//// GetWithColumnItem returns list of users
+//// @Summary GetWithColumnItem
+//// @Description Api returns list of users
+//// @Tags user
+//// @Accept json
+//// @Produce json
+//// @Param page path int64 true "Page"
+//// @Param limit path int64 true "Limit"
+//// @Param column path string true "Column"
+//// @Param item path string true "Item"
+//// @Succes 200 {object} models.Users
+//// @Failure 400 {object} models.StandardErrorModel
+//// @Failure 500 {object} models.StandardErrorModel
+//// @Router /v1/users/columns [get]
+//func (h *handlerV1) GetWithColumnItem(c *gin.Context) {
+//	queryParams := c.Request.URL.Query()
+//
+//	columnName := c.Query("column")
+//	item := c.Query("item")
+//
+//	params, errStr := utils.ParseQueryParams(queryParams)
+//	if errStr != nil {
+//		c.JSON(http.StatusBadRequest, gin.H{
+//			"error": errStr[0],
+//		})
+//		h.log.Error("failed to parse query params json" + errStr[0])
+//		return
+//	}
+//
+//	var jspbMarshal protojson.MarshalOptions
+//	jspbMarshal.UseProtoNames = true
+//
+//	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
+//	defer cancel()
+//
+//	response, err := h.serviceManager.UserService().GetWithColumnAndItem(ctx, &pbu.GetWithColumnAndItemReq{
+//		Column: columnName,
+//		Item:   item,
+//		Page:   params.Page,
+//		Limit:  params.Limit,
+//	})
+//
+//	if err != nil {
+//		c.JSON(http.StatusInternalServerError, gin.H{
+//			"error": err.Error(),
+//		})
+//		h.log.Error("failed to list users", l.Error(err))
+//		return
+//	}
+//
+//	c.JSON(http.StatusOK, response)
+//}
