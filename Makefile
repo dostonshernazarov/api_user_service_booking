@@ -13,3 +13,8 @@ lint: ## Run golangci-lint with printing to stdout
 
 swag-gen:
 	swag init -g api/router.go -o api/docs
+
+
+docker-run:
+	sudo docker run -d --name api_user_service -p 8080:8080 3b10
+
